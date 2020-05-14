@@ -1,0 +1,21 @@
+---
+
+# Applications to be installed via Homebrew
+homebrew:
+  - cf-cli
+  - curl
+  - wget
+  - git
+  - hub
+  - libgit2
+  - the_silver_searcher
+  - vim
+
+taps:
+  - cloudfoundry/homebrew-tap
+  - homebrew/services
+
+casks:
+  - chromedriver
+  - docker
+  - slack
