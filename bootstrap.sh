@@ -18,7 +18,9 @@ pushd /tmp
     source python.sh
 
     # I'm going to need 'git' to bootstrap.
-    brew install git
+    if command -v git >/dev/null 2>&1; then
+        brew install git
+    fi
 popd
 
 # At this point, Ansible should be installable.
@@ -26,10 +28,21 @@ popd
 pip install --upgrade pip
 pip install wheel ansible
 
-# Once we have ansible, everything else happens there.
 pushd /tmp
-    git clone https://github.com/${ORG_REPOS}
+    # Get the repository. This lets us update the Ansible scripts
+    # arbitrarily, and know that, on re-run, we always get the most
+    # recent version of the configuration/automation.
+    if [[ -d ${REPOS} ]]; then
+        pushd ${REPOS}
+            git pull
+        popd
+    else
+        git clone https://github.com/${ORG_REPOS}
+    fi
+
     pushd ${REPOS}
+        # At this point, we have the repository, and can 
+        # run the most up-to-date playbook.
         ansible-playbook -i hosts playbook.yaml
     popd
 popd
