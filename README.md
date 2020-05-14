@@ -27,7 +27,7 @@ and once it appears, press `return` to launch it.
 In your Terminal window, copy and paste the command below, then press `return`.
 
 ```sh
-bash <(curl -s https://raw.githubusercontent.com/18F/laptop/master/laptop)
+bash <(curl -s https://raw.githubusercontent.com/jadudm/laptoptwo/master/bootstrap.sh)
 ```
 The [script](https://github.com/18F/laptop/blob/master/mac) itself is
 available in this repo for you to review if you want to see what it does
