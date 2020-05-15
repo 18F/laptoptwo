@@ -85,7 +85,10 @@ setup_virtual_environment () {
 # Installs Ansible via pip. We should be in the virtualenv at this point.
 pip_install_ansible () {
     echo "[LAPTOP] Installing ansible into the venv."
-    pip install --no-cache-dir --upgrade wheel ansible
+    pip install --no-cache-dir --upgrade \
+        wheel \
+        ansible \
+        github3.py
 }
 
 run_playbook () {
