@@ -2,7 +2,7 @@
 - hosts: local
   roles:
     - ping
-    - role: setup
+    - role: install
       tags:
         - setup
         - install
