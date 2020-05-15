@@ -2,4 +2,14 @@
 - hosts: local
   roles:
     - ping
-    - setup
+    - role: setup
+      tags:
+        - setup
+        - install
+    - role: gpg
+      tags:
+        - gpg
+    - role: seekret
+      tags:
+        - setup
+        - seekret

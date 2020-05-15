@@ -1,2 +1,33 @@
-- name: install applications
-  include: applications.yaml
+---
+# NOTE: Some of these can be *really* slow over the VPN.
+# Or, perhaps it is dependant on your ISP.
+
+# Taps are external Homebrew repositories.
+# Install them first to support installation
+# of Homebrew apps from these repositories.
+- name: install applications from taps
+  homebrew_tap:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ taps }}"
+
+# Homebrew applications are typically comamnd-line
+# applications; for example, 'git'.
+- name: install applications from homebrew
+  homebrew:
+    name: "{{ item }}"
+    state: latest
+  loop: "{{ homebrew }}"
+
+# Cask applications are Mac GUI applications.
+# Effectively the same as dragging something into
+# the Applications folder. (This is where cask installs
+# end up, actually.) We are ignoring errors for applications,
+# because users may have installed something themselves
+# (e.g. Slack).
+- name: install applications from casks
+  homebrew_cask:
+    name: "{{ item }}"
+    state: latest
+  loop: "{{ casks }}"
+  ignore_errors: yes

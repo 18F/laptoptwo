@@ -1,21 +1,29 @@
 ---
 
 # Applications to be installed via Homebrew
+# e.g. "brew install <thing>"
 homebrew:
   - cf-cli
   - curl
-  - wget
   - git
+  - github/gh/gh
+  - gpg
   - hub
   - libgit2
   - the_silver_searcher
   - vim
+  - wget
 
+# Taps to install
+# e.g. "brew tap <thing>"
 taps:
   - cloudfoundry/homebrew-tap
   - homebrew/services
 
+# Casks (Mac GUI apps) to install
+# e.g. "brew cask <thing>"
 casks:
   - chromedriver
   - docker
+  - keepassxc
   - slack
