@@ -1,7 +1,5 @@
 # LaptopTwo
 
-[![Build Status](https://circleci.com/gh/18F/laptop.svg)](https://circleci.com/gh/18F/laptop)
-
 LaptopTwo is a script to set up an OS X computer for web development, and to keep
 it up to date.
 
