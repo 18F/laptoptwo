@@ -3,11 +3,6 @@
 # GPG for signing commits is annoying on macOS.
 # https://stackoverflow.com/questions/39494631/gpg-failed-to-sign-the-data-fatal-failed-to-write-commit-object-git-2-10-0
 
-# WARNING
-# Should tasks install things, or should everything be at the "top level?"
-# When configuration is needed, perhaps it is appropriate to do the 
-# installation local to the role/task that is doing the mangling.
-
 # gnupg is also known as gnupg2, gpg, gpg2, and
 # several other aliases in brew.
 - name: install gpg
