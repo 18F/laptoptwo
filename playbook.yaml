@@ -1,5 +1,5 @@
 ---
-- hosts: thislaptop
+- hosts: all
   roles:
     - ping
     - setup
