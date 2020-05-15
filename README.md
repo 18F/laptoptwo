@@ -18,7 +18,7 @@ This script has been tested on:
 
 Begin by opening the Terminal application on your Mac. The easiest way to open
 an application in OS X is to search for it via [Spotlight]. The default
-keyboard shortcut for invoking Spotlight is &#8984;-Space (orm, hold the command key and press space). Once Spotlight
+keyboard shortcut for invoking Spotlight is &#8984;-Space (or, hold the command key and press space). Once Spotlight
 is up, just start typing the first few letters of the app you are looking for,
 and once it appears, press `return` to launch it.
 
