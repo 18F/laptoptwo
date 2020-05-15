@@ -1,6 +1,6 @@
 ---
 # NOTE: Some of these can be *really* slow over the VPN.
-# Or, perhaps it is dependant on your ISP.
+# Or, perhaps it is dependent on your ISP.
 
 # Taps are external Homebrew repositories.
 # Install them first to support installation
@@ -11,7 +11,7 @@
     state: present
   loop: "{{ taps }}"
 
-# Homebrew applications are typically comamnd-line
+# Homebrew applications are typically command-line
 # applications; for example, 'git'.
 - name: install applications from homebrew
   homebrew:
