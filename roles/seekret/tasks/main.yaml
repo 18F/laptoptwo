@@ -1,0 +1,11 @@
+---
+- name: get github release
+  github_release:
+    user: 18F
+    repo: git-seekret
+    action: latest_release
+  register: release
+
+- name: show value
+  debug:
+    var: release.tag

@@ -1,0 +1,33 @@
+---
+
+# GPG for signing commits is annoying on macOS.
+# https://stackoverflow.com/questions/39494631/gpg-failed-to-sign-the-data-fatal-failed-to-write-commit-object-git-2-10-0
+
+- name: install gpg
+  homebrew:
+    name: gnupg
+    state: latest
+
+- name: force gpg to be upgraded
+  command: 
+    cmd: brew upgrade gnupg
+
+- name: do bad things to the brew links for gnupg
+  command: 
+    cmd: brew link --overwrite gnupg
+
+- name: install pinentry to support signing
+  homebrew:
+    name: pinentry-mac
+    state: latest
+
+- name: setup pinentry to support gnupg
+  lineinfile:
+    path: ~/.gnupg/gpg-agent.conf
+    line: pinentry-program /usr/local/bin/pinentry-mac
+    state: present
+    create: yes
+
+- name: kick the agent
+  command:
+    cmd: killall gpg-agent
