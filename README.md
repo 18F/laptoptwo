@@ -38,5 +38,3 @@ automatically at the end of the script so you can set up everything you'll
 need to push code to GitHub.
 
 **Once the script is done, make sure to quit and relaunch Terminal.**
-
-
