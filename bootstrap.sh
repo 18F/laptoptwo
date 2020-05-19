@@ -29,12 +29,15 @@ install_homebrew () {
 # install_git :: None -> None
 # PURPOSE
 # What it says on the tin. Everything is easier if we have 
-# git installed. 
+# python and git installed. 
 install_git () {
+    echo "[LAPTOP] Installing python via brew."
+    brew install python
     echo "[LAPTOP] Checking for git."
     if ! command -v git > /dev/null; then
         brew install git
     fi
+
 }
 
 # setup_tmp_dir :: None -> None
@@ -59,7 +62,6 @@ get_pip () {
     if ! command -v pip3 > /dev/null; then
         echo "[LAPTOP] Installing a temporary pip for automation."
         pushd ${TMP_DIR}
-            export PIP_TARGET=${TMP_DIR}/pip
             mkdir -p ${PIP_TARGET}
             curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
             python get-pip.py --upgrade --no-cache-dir --no-warn-script-location
@@ -73,6 +75,7 @@ get_pip () {
 # known Python3 to work with. 
 setup_virtual_environment () {
     echo "[LAPTOP] Setting up a venv."
+    export PIP_TARGET=${TMP_DIR}/pip    
     THIS_VENV=${TMP_DIR}/laptop-setup-venv
     pip3 install --no-cache-dir --upgrade virtualenv
     virtualenv --system-site-packages -p python3 ${THIS_VENV}
@@ -99,7 +102,7 @@ main () {
     install_homebrew
     install_git
     setup_tmp_dir
-    get_pip
+    # get_pip
     setup_virtual_environment
     pip_install_ansible
     run_playbook
