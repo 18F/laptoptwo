@@ -12,10 +12,6 @@
     suffix: seekret-temp
   register: temp_directory
 
-- name: temporary destination directory
-  debug:
-    var: temp_directory
-
 - name: grab the 18F seekrets release
   get_url:
     dest: "{{ temp_directory.path }}"
