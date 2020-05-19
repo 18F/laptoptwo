@@ -6,10 +6,6 @@
     action: latest_release
   register: release
 
-- name: show value
-  debug:
-    var: release
-
 - name: create working temp directory for seekret install
   tempfile:
     state: directory
@@ -63,4 +59,3 @@
 - name: activate all the installed hooks
   command:
     cmd: git seekret --global hook --enable-all
-    
