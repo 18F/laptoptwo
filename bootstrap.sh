@@ -190,7 +190,7 @@ exit_if_install_ansible_failed () {
 }
 
 run_playbook () {
-    pushd ${LAPTOP_TMP_DIR} || exit
+    pushd "${LAPTOP_TMP_DIR}" || exit
        ansible-pull -v -U https://github.com/${ORG_REPOS} playbook.yaml -v -i hosts
     popd || exit
 }
