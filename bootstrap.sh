@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 ORG=jadudm
 REPOS=laptoptwo
@@ -26,18 +26,35 @@ install_homebrew () {
     printf "\n"    
 }
 
+exit_if_homebrew_install_failed () {
+    if [[ ! -f "/usr/local/bin/brew" ]]; then
+        printf "[ERROR] Homebrew cannot be found at /usr/local/bin/brew. Exiting."
+        exit
+    fi
+}
+
 # install_git :: None -> None
 # PURPOSE
 # What it says on the tin. Everything is easier if we have 
 # python and git installed. 
 install_git () {
     echo "[LAPTOP] Installing python via brew."
-    brew install python
+    # This will error if the package is not installed.
+    # Therefore, it will install. Or, if it is installed, nothing will happen.
+    # https://apple.stackexchange.com/questions/284379/with-homebrew-how-to-check-if-a-software-package-is-installed
+    brew list python || brew install python
     echo "[LAPTOP] Checking for git."
     if ! command -v git > /dev/null; then
-        brew install git
+        brew list git || brew install git
     fi
 
+}
+
+exit_if_git_install_failed () {
+    if ! command -v git > /dev/null; then
+        printf "[ERROR] git should be installed at this point; it is not. Exiting."
+        exit
+    fi
 }
 
 # setup_tmp_dir :: None -> None
@@ -50,8 +67,9 @@ setup_tmp_dir () {
     # for why this is necessary.
     echo "[LAPTOP] Creating a temporary directory."
     echo "[LAPTOP] This is small, and will disappear on reboot."
-    DIRNAME=laptop-`date +%s`
-    export TMP_DIR=$(mktemp -d -t $DIRNAME)
+    DIRNAME=laptop-$(date +%s)
+    export TMP_DIR
+    TMP_DIR=$(mktemp -d -t "$DIRNAME")
 }
 
 # update_user_pip :: None -> None
@@ -61,11 +79,11 @@ setup_tmp_dir () {
 get_pip () { 
     if ! command -v pip3 > /dev/null; then
         echo "[LAPTOP] Installing a temporary pip for automation."
-        pushd ${TMP_DIR}
-            mkdir -p ${PIP_TARGET}
+        pushd "${TMP_DIR}" || exit
+            mkdir -p "${PIP_TARGET}"
             curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
             python get-pip.py --upgrade --no-cache-dir --no-warn-script-location
-        popd
+        popd || exit
     fi
 }
 
@@ -76,11 +94,12 @@ get_pip () {
 setup_virtual_environment () {
     echo "[LAPTOP] Setting up a venv."
     export PIP_TARGET=${TMP_DIR}/pip    
-    THIS_VENV=${TMP_DIR}/laptop-setup-venv
+    export THIS_VENV=${TMP_DIR}/laptop-setup-venv
     pip3 install --no-cache-dir --upgrade virtualenv
-    virtualenv --system-site-packages -p python3 ${THIS_VENV}
-    echo "Activating virtualenv: ${THIS_VENV}"
-    source ${THIS_VENV}/bin/activate
+    virtualenv --system-site-packages -p python3 "${THIS_VENV}"
+    # Shellcheck wants to know where this is, but we can't say.
+    # shellcheck source=/dev/null
+    . "${THIS_VENV}/bin/activate"
 }
 
 # pip_install_ansible :: None -> None
@@ -100,10 +119,13 @@ run_playbook () {
 
 main () {
     install_homebrew
+    exit_if_homebrew_install_failed
     install_git
+    exit_if_git_install_failed
     setup_tmp_dir
     # get_pip
     setup_virtual_environment
+
     pip_install_ansible
     run_playbook
 }

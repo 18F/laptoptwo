@@ -30,6 +30,9 @@
     state: present
     create: yes
 
+# It is possible the process does not exist. If that is the case, 
+# ignore the error that results, as Ansible considers it a failure.
 - name: kick the agent; we'll be using pinetry
   command:
     cmd: killall gpg-agent
+  ignore_errors: yes  
