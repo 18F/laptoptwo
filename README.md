@@ -1,16 +1,16 @@
 # LaptopTwo
 
-LaptopTwo is a script to set up an OS X computer for web development, and to keep
-it up to date.
+The purpose of this script is to set up a macOS computer for web/software development, primarily at 18F/TTS/GSA. 
 
-It can be run multiple times on the same machine safely.
-It installs, upgrades, or skips packages
-based on what is already installed on the machine.
+This can be safely run multiple times.
 
 ## Requirements
 
+The script installs what it needs to do what it does. 
 
-This script has been tested on:
+## Testing
+
+This has been tested on:
 
 * [macOS Mojave 10.14](https://www.apple.com/osx/)
 
@@ -18,7 +18,11 @@ This script has been tested on:
 
 Begin by opening the Terminal application on your Mac. The easiest way to open
 an application in OS X is to search for it via [Spotlight]. The default
-keyboard shortcut for invoking Spotlight is &#8984;-Space (or, hold the command key and press space). Once Spotlight
+keyboard shortcut for invoking Spotlight is &#8984;-Space (or, hold the command key and press space). 
+
+![Animated GIF demonstrating how to use Spotlight to open Terminal.app](images/open-terminal.gif)
+
+Once Spotlight
 is up, just start typing the first few letters of the app you are looking for,
 and once it appears, press `return` to launch it.
 
@@ -27,40 +31,27 @@ In your Terminal window, copy and paste the command below, then press `return`.
 ```sh
 bash <(curl -s https://raw.githubusercontent.com/jadudm/laptoptwo/master/bootstrap.sh)
 ```
-The [script](https://github.com/jadudm/laptoptwo/blob/master/bootstrap.sh) itself is
-available in this repo for you to review if you want to see what it does
-and how it works.
 
-Note that the script will ask you to enter your OS X password at various
-points. This is the same password that you use to log in to your Mac.
-If you don't already have it installed, GitHub for Mac will launch
-automatically at the end of the script so you can set up everything you'll
-need to push code to GitHub.
+The script will ask you to enter your OS X password at various
+points. This is the same password that you use to log in to your Mac. This is necessary to install OSX development tools and the like; your password is not captured or stored in any way.
 
 **Once the script is done, make sure to quit and relaunch Terminal.**
 
 ## What It Does
 
-The script assumes you have nothing on your Mac laptop to support your work in developing software. It does the following things:
-
-1. Installs [homebrew](https://brew.sh/). 
-   1. If homebrew exists, it updates it.
-2. Uses `brew` to install `git` and `python`.
-   1. This gives us a known python to work against.
-3. Creates a virtual environment.
-4. Installs Ansible into the virtual environment.
-5. Checks out this repository via `ansible-pull`.
-6. Runs the Ansible playbook.
-
-The playbook is organized into roles. Each role carries out a different set of tasks:
-
-* `install` installs software for development.
-* `gpg` installs GPG and configures `pinetry` (which is a GUI for password entry). In combination, these two tools let you [sign your commits](https://help.github.com/en/github/authenticating-to-github/signing-commits).
-* `seekret` installs git-seekret for scanning your commits for tokens, passwords, and things you shouldn't have in your repository. This is installed as a binary from an [18F GitHub repository](https://github.com/18F/git-seekret).
+The script first installs `homebrew`, a tool that manages the installation of software packages, particularly open software you will find useful when doing development. It then installs [Ansible](https://www.ansible.com/) to automate setup tasks. Ansible is often used in the context of server setup and automation, making it an appropriate tool for setting up your macOS laptop.
 
 ## Contributing
 
-If you want to extend the work of the script, it is almost certainly the case that it should be through 1) changes to existing roles, or 2) the addition of a new role. 
+There are a few great ways to contribute:
 
-For example, if there is additional software that we should consider installing by default, then it should be a modification of the `install` role. If we have a completely new setup task (e.g. automating the ordering takeaway via a fancy API before calling the installation "done"), it should be added as a new role.
+1. If something doesn't work, post an issue on the GitHub repos.
+2. If something could work better, post an issue.
+3. If you think something should become part of the default setup, post an issue.
+4. If you want to add a new feature, consider adding a new [role](https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse_roles.html).
 
+The setup script makes use of Ansible "roles." In this script, we're using each role to capture a different aspect of the setup process. For example, the [install](roles/install) role automates all of the package installations and updates via `homebrew`. The [gpg](roles/gpg) role configures GPG, which requires a bit of tweaking on macOS (as opposed to Linux). It might be that your contribution extends or modifies an existing role, or perhaps it adds a whole new role (because your contribution does something new). Either way, either open an issue to discuss the contribution, or make a pull request for review!
+
+## Rationale, Vision, Governance, and More
+
+See [the rationale document](RATIONALE.md) for more. It has all the other things.

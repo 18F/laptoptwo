@@ -6,6 +6,8 @@ This document briefly explores the what, why, and how of a new laptop configurat
 - [How](#how)
 - [Assumptions](#assumptions)
 - [Principles](#principles)
+- [Vision](#vision)
+- [Governance](#governance)
 
 ## What
 
@@ -20,7 +22,7 @@ For several reasons. First, the existing script did not work. Second, it was ref
 The script attempts to bootstrap to [Ansible](https://www.ansible.com/) as quickly as possible. 
 
 1. Begin by installing/updating `homebrew`. 
-2. `homebrew` is used to install `git`.
+2. `homebrew` is used to install `python` and `git`.
 3.  The `bash` script then creates a `pip` environment (effectively) in `/tmp`.
 4.  This temporary/local `pip` is used to bootstrap a temporary `python3` virtual environment.
 5.  `ansible` is installed into the venv.
@@ -39,6 +41,14 @@ At no point is `pip`, `homebrew`, `git`, `python`, or `ansible` assumed to be pr
 
 - Do as little work in `bash` as possible.
 - Achieve idempotency using tools designed for purpose.
+
+## Vision
+
+Laptop setup should *just work*. The script should also serve to *maintain* the tooling installed. Users should be able to stop using the script with no loss of access, generality, or functionality if they choose.
+
+## Governance
+
+Mercy. If we get to needing governance, we'll write it.
 
 
 
