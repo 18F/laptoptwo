@@ -11,8 +11,7 @@ ORG_REPOS=${ORG}/${REPOS}
 # EXIT CODES
 INSTALL_HOMEBREW_FAILED=-100
 INSTALL_GIT_FAILED=-101
-SETUP_VIRTUAL_ENV_FAILED=-102
-INSTALL_ANSIBLE_FAILED=-103
+INSTALL_ANSIBLE_FAILED=-102
 
 ####################################
 # LOGGING AND MESSAGING
@@ -20,10 +19,16 @@ INSTALL_ANSIBLE_FAILED=-103
 # logging what is going on. By default, very little goes to the
 # user, but everything does go to the log.
 
+# PURPOSE
+# Creates a temporary logfile in a way that lets the OS
+# decide where it should go. 
 create_logfile () {
     export LAPTOP_SETUP_LOGFILE=$(mktemp -t "laptop-log")
 }
 
+# PURPOSE
+# Sets up redirects so that STDOUT and STDERR make their way to 
+# a temporary logfile. 
 setup_logging () {
     # https://serverfault.com/questions/103501/how-can-i-fully-log-all-bash-scripts-actions
     # Save all the pipes.
@@ -91,6 +96,8 @@ command_does_not_exist () {
     fi
 }
 
+# PURPOSE
+# Restores the file descriptors after capturing/redirecting.
 restore_console () {
     # https://stackoverflow.com/questions/21106465/restoring-stdout-and-stderr-to-default-value
     # Reconnect stdout and close the third filedescriptor.
@@ -99,6 +106,8 @@ restore_console () {
     exec 1>&3 3>&-
 }
 
+# PURPOSE
+# Exit, and let the user know what to do.
 exit_with_status () {
     $EXITCODE = $1
     
@@ -125,7 +134,6 @@ exit_with_status () {
     exit $EXITCODE
 }
 
-# install_homebrew :: None -> None
 # PURPOSE
 # Installs homebrew.
 install_homebrew () {
@@ -142,6 +150,8 @@ install_homebrew () {
     fi
 }
 
+# PURPOSE
+# What it says.
 exit_if_install_homebrew_failed () {
     if command_does_not_exist brew; then
         _err "Homebrew cannot be found. Exiting."
@@ -194,7 +204,6 @@ exit_if_install_tooling_via_brew_failed () {
     fi    
 }
 
-# setup_tmp_dir :: None -> None
 # PURPOSE
 # Creates a temporary directory in the user's temp space.
 # On macOS, mktemp doesn't behave the same as Linux. Beware.
