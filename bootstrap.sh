@@ -60,22 +60,22 @@ _msg () {
 
 _status () {
     MSG="$1"
-    _msg "STATUS" ${GREEN} "${MSG}"
+    _msg "STATUS" "${GREEN}" "${MSG}"
 }
 
 _debug () {
     MSG="$1"
-    _msg "DEBUG" ${YELLOW} "${MSG}"
+    _msg "DEBUG" "${YELLOW}" "${MSG}"
 }
 
 _err () {
     MSG="$1"
-    _msg "ERROR" ${RED} "${MSG}"
+    _msg "ERROR" "${RED}" "${MSG}"
 }
 
 _variable () {
     VAR="$1"
-    _msg "$VAR" ${PURPLE} "${!VAR}"
+    _msg "$VAR" "${PURPLE}" "${!VAR}"
 }
 
 ####################################

@@ -1,0 +1,3 @@
+---
+- name: ask if the user wants to use zsh
+  ping:
