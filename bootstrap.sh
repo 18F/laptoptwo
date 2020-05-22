@@ -14,6 +14,29 @@ INSTALL_GIT_FAILED=-101
 SETUP_VIRTUAL_ENV_FAILED=-102
 INSTALL_ANSIBLE_FAILED=-103
 
+####################################
+# LOGGING AND MESSAGING
+# These helper functions are used throughout for reporting and 
+# logging what is going on. By default, very little goes to the
+# user, but everything does go to the log.
+
+create_logfile () {
+    export LAPTOP_SETUP_LOGFILE=$(mktemp -t "laptop-log")
+}
+
+setup_logging () {
+    # https://serverfault.com/questions/103501/how-can-i-fully-log-all-bash-scripts-actions
+    # Save all the pipes.
+    # 3 is Stdout. 4 is stderr.
+    exec 3>&1 4>&2
+    # Restore some.
+    trap 'exec 2>&4 1>&3' 0 1 2 3
+    # Redirect stdout/stderr to a logfile.
+    exec 1>> "${LAPTOP_SETUP_LOGFILE}" 2>&1
+    _status "Logfile started. It can be accessed for debugging purposes."
+    _variable "LAPTOP_SETUP_LOGFILE"
+}
+
 # COLORS!
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -26,6 +49,7 @@ _msg () {
     TAG="$1"
     COLOR="$2"
     MSG="$3"
+    printf "[${TAG}] ${MSG}\n" >&1
     printf "[${COLOR}${TAG}${NC}] ${MSG}\n" >&3
 }
 
@@ -49,26 +73,56 @@ _variable () {
     _msg "$VAR" ${PURPLE} "${!VAR}"
 }
 
+####################################
+# CHECKS
+# These are helper functions for checking if things exist,
+# etc. Used a lot, clarifies the code.
+
 # https://stackoverflow.com/questions/592620/how-can-i-check-if-a-program-exists-from-a-bash-script
 command_exists () {
     type "$1" &> /dev/null ;
 }
 
 command_does_not_exist () {
-    return ! command_exists "$1"
+    if command_exists "$1"; then
+        return 1
+    else 
+        return 0
+    fi
 }
 
-setup_logging () {
-    # https://serverfault.com/questions/103501/how-can-i-fully-log-all-bash-scripts-actions
-    # Save all the pipes.
-    exec 3>&1 4>&2
-    # Restore some.
-    trap 'exec 2>&4 1>&3' 0 1 2 3
-    # Redirect stdout/stderr to a logfile.
-    LAPTOP_SETUP_LOGFILE=$(mktemp -t "laptop-log")
-    _status "Logfile started. It can be accessed for debugging purposes."
-    _variable "LAPTOP_SETUP_LOGFILE"
-    exec 1> "${LAPTOP_SETUP_LOGFILE}" 2>&1
+restore_console () {
+    # https://stackoverflow.com/questions/21106465/restoring-stdout-and-stderr-to-default-value
+    # Reconnect stdout and close the third filedescriptor.
+    exec 1>&4 4>&-
+    # Reconnect stderr
+    exec 1>&3 3>&-
+}
+
+exit_with_status () {
+    $EXITCODE = $1
+    
+    _err ""
+    _err "The logfile for this run can be found at"
+    _err ""
+    _err "${LAPTOP_SETUP_LOGFILE}"
+    _err ""
+    _err "The contents of the logfile have been copied to the clipboard."
+    _err "Please command-click the link below to open the laptoptwo issue tracker."
+    _err ""
+    _err "https://github.com/${ORG}/${REPOS}/issues"
+    _err ""
+    _err "Then, paste (command-v) the contents of the clipboard into a new issue."
+    _err ""
+    _err "You can run the command"
+    _err ""
+    _err "pbcopy < ${LAPTOP_SETUP_LOGFILE}"
+    _err ""
+    _err "to re-copy the log to the clipboard."
+    _err "Exiting."
+
+    pbcopy < "${LAPTOP_SETUP_LOGFILE}"
+    exit $EXITCODE
 }
 
 # install_homebrew :: None -> None
@@ -83,40 +137,61 @@ install_homebrew () {
         # variable properly once we're bootstrapped.
         export PATH="/usr/local/bin:$PATH"
     else
-        _status "Update Homebrew"
+        _status "Update Homebrew."
         brew update
     fi
 }
 
 exit_if_install_homebrew_failed () {
-    if [[ ! -f "/usr/local/bin/brew" ]]; then
-        _err "Homebrew cannot be found at /usr/local/bin/brew. Exiting."
-        exit $INSTALL_HOMEBREW_FAILED
+    if command_does_not_exist brew; then
+        _err "Homebrew cannot be found. Exiting."
+        exit_with_status $INSTALL_HOMEBREW_FAILED
     fi
 }
 
-# install_git :: None -> None
+# install_tooling_via_brew :: None -> None
 # PURPOSE
 # What it says on the tin. Everything is easier if we have 
 # python and git installed. 
-install_git () {
+install_tooling_via_brew () {
     _status "Installing python via brew."
     # This will error if the package is not installed.
     # Therefore, it will install. Or, if it is installed, nothing will happen.
     # https://apple.stackexchange.com/questions/284379/with-homebrew-how-to-check-if-a-software-package-is-installed
     brew list python || brew install python
+    
     _status "Checking for git."
-    if ! command -v git > /dev/null; then
+    if command_does_not_exist git; then
+        _status "Installing git."
         brew list git || brew install git
+    fi
+
+    _status "Checking for ansible."
+    if command_does_not_exist ansible; then
+        _status "Installing ansible."
+        brew list ansible || brew install ansible
     fi
 
 }
 
-exit_if_install_git_failed () {
+
+exit_if_install_tooling_via_brew_failed () {
     if command_does_not_exist git; then
         _err "git should be installed at this point; it is not. Exiting."
-        exit $INSTALL_GIT_FAILED
+        exit_with_status $INSTALL_GIT_FAILED
     fi
+    if command_does_not_exist ansible; then
+        _err "ansible should be installed at this point; it is not. Exiting."
+        exit_with_status $INSTALL_ANSIBLE_FAILED
+    fi
+    if command_does_not_exist ansible-playbook; then
+        _err "ansible-playbook should be installed at this point; it is not. Exiting."
+        exit_with_status $INSTALL_ANSIBLE_FAILED
+    fi
+    if command_does_not_exist ansible-pull; then
+        _err "ansible-pull should be installed at this point; it is not. Exiting."
+        exit_with_status $INSTALL_ANSIBLE_FAILED
+    fi    
 }
 
 # setup_tmp_dir :: None -> None
@@ -134,78 +209,22 @@ setup_tmp_dir () {
     LAPTOP_TMP_DIR=$(mktemp -d -t "$DIRNAME")
 }
 
-# setup_virtual_environment :: None -> None
-# PURPOSE
-# Sets up a virtual environment in /tmp so that we can have a 
-# known Python3 to work with. 
-setup_virtual_environment () {
-    _status "Setting up a venv."
-    export PIP_TARGET="${LAPTOP_TMP_DIR}/pip"
-    export LAPTOP_SETUP_VENV="${LAPTOP_TMP_DIR}/laptop-setup-venv"
-    _variable "LAPTOP_SETUP_VENV"
-    pip3 install --no-cache-dir --upgrade virtualenv
-    virtualenv --system-site-packages -p python3 "${LAPTOP_SETUP_VENV}"
-    # Shellcheck wants to know where this is, but we can't say.
-    # shellcheck source=/dev/null
-    . "${LAPTOP_SETUP_VENV}/bin/activate"
-}
-
-exit_if_setup_virtual_env_failed () {
-    # Check the venv directory exists.
-    if [[ ! -d "${LAPTOP_SETUP_VENV}" ]]; then
-        _err "The virtual env directory was not created."
-        _variable "LAPTOP_SETUP_VENV"
-        exit $SETUP_VIRTUAL_ENV_FAILED    
-    fi
-    # Check if we can activate it.
-    LAPTOP_VENV_ACTIVATE="${LAPTOP_SETUP_VENV}/bin/activate"
-    if command_does_not_exist "${LAPTOP_VENV_ACTIVATE}"; then
-        _err "Cannot find the 'activate' script for the local venv."
-        _variable "LAPTOP_VENV_ACTIVATE"
-        exit $SETUP_VIRTUAL_ENV_FAILED
-    fi
-}
-
-# pip_install_ansible :: None -> None
-# PURPOSE
-# Installs Ansible via pip. We should be in the virtualenv at this point.
-pip_install_ansible () {
-    _status "Installing ansible into the venv. This takes a while. ☕️"
-    pip install --no-cache-dir --upgrade \
-        wheel \
-        ansible \
-        github3.py
-}
-
-exit_if_install_ansible_failed () {
-    if command_does_not_exist ansible-playbook; then
-        _err "Cannot find 'ansible-playbook'; exiting."
-        return $INSTALL_ANSIBLE_FAILED
-    fi
-
-    if command_does_not_exist ansible-pull; then
-        _err "Cannot find 'ansible-pull'; exiting."
-        return $INSTALL_ANSIBLE_FAILED
-    fi
-}
-
 run_playbook () {
     pushd "${LAPTOP_TMP_DIR}" || exit
-       ansible-pull -v -U https://github.com/${ORG_REPOS} playbook.yaml -v -i hosts
+        restore_console
+        ansible-pull -v -U https://github.com/${ORG_REPOS} playbook.yaml -v -i hosts
+        setup_logging
     popd || exit
 }
 
 main () {
+    create_logfile
     setup_logging
     install_homebrew
     exit_if_install_homebrew_failed
-    install_git
-    exit_if_install_git_failed
+    install_tooling_via_brew
+    exit_if_install_tooling_via_brew_failed
     setup_tmp_dir
-    setup_virtual_environment
-    exit_if_setup_virtual_env_failed
-    pip_install_ansible
-    exit_if_install_ansible_failed
     # Let the playbook drive the exit code.
     run_playbook
     exit $?
