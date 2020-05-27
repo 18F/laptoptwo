@@ -9,6 +9,7 @@ homebrew:
   - github/gh/gh
   - hub
   - libgit2
+  - rbenv
   - the_silver_searcher
   - vim
   - wget
@@ -24,5 +25,6 @@ taps:
 casks:
   - chromedriver
   - docker
+  - github
   - keepassxc
   - slack
