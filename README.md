@@ -32,8 +32,12 @@ In your Terminal window, copy and paste the command below, then press `return`.
 bash <(curl -s https://raw.githubusercontent.com/jadudm/laptoptwo/master/bootstrap.sh)
 ```
 
-The script will ask you to enter your OS X password at various
-points. This is the same password that you use to log in to your Mac. This is necessary to install OSX development tools and the like; your password is not captured or stored in any way.
+![Animated GIF demonstrating the output of the script execution](images/script-output.gif)
+
+The animation above accelerates the script's execution time; in reality, it takes several minutes.
+
+You will be asked to enter your OS X password at various
+points (for example, to install the macOS developer tools). This is the same password that you use to log in to your Mac. Your password is not captured or stored in any way.
 
 **Once the script is done, make sure to quit and relaunch Terminal.**
 
