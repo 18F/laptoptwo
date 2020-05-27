@@ -9,7 +9,7 @@
     - role: gpg
       tags:
         - gpg
-    - role: seekret
+    - role: caulking
       tags:
         - setup
-        - seekret
+        - caulking

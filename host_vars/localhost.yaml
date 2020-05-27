@@ -1,0 +1,5 @@
+---
+# For information on where to put variables,
+# and how they are organized:
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html
+caulking_git_url: https://github.com/cloud-gov/caulking

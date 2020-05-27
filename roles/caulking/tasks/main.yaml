@@ -1,0 +1,31 @@
+---
+
+- name: create a temp directory for caulking checkout
+  tempfile:
+    state: directory
+    suffix: caulking
+  register: tempdir_caulking
+
+- name: report location of tempdir
+  debug:
+    var: tempdir_caulking
+
+- name: checkout caulking
+  git:
+    repo: "{{ caulking_git_url }}"
+    dest: "{{ tempdir_caulking.path }}"
+
+- name: run make
+  command:
+    cmd: "make"
+    chdir: "{{ tempdir_caulking.path }}"
+
+- name: run make install
+  command:
+    cmd: "make install"
+    chdir: "{{ tempdir_caulking.path }}"
+
+- name: make sure patterns are up-to-date
+  command:
+    cmd: "make patterns"
+    chdir: "{{ tempdir_caulking.path }}"
