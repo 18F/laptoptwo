@@ -9,6 +9,9 @@ homebrew:
   - github/gh/gh
   - hub
   - libgit2
+  - pyenv
+  - pyenv-virtualenv
+  - pyenv-virtualenvwrapper
   - rbenv
   - the_silver_searcher
   - vim

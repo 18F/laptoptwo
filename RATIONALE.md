@@ -22,25 +22,24 @@ For several reasons. First, the existing script did not work. Second, it was ref
 The script attempts to bootstrap to [Ansible](https://www.ansible.com/) as quickly as possible. 
 
 1. Begin by installing/updating `homebrew`. 
-2. `homebrew` is used to install `python` and `git`.
-3.  The `bash` script then creates a `pip` environment (effectively) in `/tmp`.
-4.  This temporary/local `pip` is used to bootstrap a temporary `python3` virtual environment.
-5.  `ansible` is installed into the venv.
-6.  This repository is checked out using `ansible-pull`.
-7.  The playbook `playbook.yaml` is executed using `ansible`.
+2. `homebrew` is used to install `python`, `git`, and `ansible`.
+3.  This repository is checked out using `ansible-pull`.
+4.  The playbook `playbook.yaml` is executed using `ansible`.
 
 Once `ansible` is installed, idempotent management of packages can commence. With every run, this repository is checked out, meaning the playbook being executed is always the most up-to-date.
+
+Because some setup actions are destructive (e.g. installing software, updating rules for checking commits), this is not truly an "idempotent" process. 
 
 ## Assumptions
 
 The bootstrap script assumes the only thing on the machine is `bash`. 
 
-At no point is `pip`, `homebrew`, `git`, `python`, or `ansible` assumed to be present. This means that with every run, we are guaranteed to have these tools available.
+At no point is `homebrew`, `git`, `python`, or `ansible` assumed to be present. This means that with every run, we are guaranteed to have these tools available, because the script either checks for them or (if not present) installs them.
 
 ## Principles
 
 - Do as little work in `bash` as possible.
-- Achieve idempotency using tools designed for purpose.
+- Aspire to idempotency using tools designed for purpose.
 
 ## Vision
 

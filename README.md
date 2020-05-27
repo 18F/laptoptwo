@@ -52,6 +52,8 @@ There are a few great ways to contribute:
 
 The setup script makes use of Ansible "roles." In this script, we're using each role to capture a different aspect of the setup process. For example, the [install](roles/install) role automates all of the package installations and updates via `homebrew`. The [gpg](roles/gpg) role configures GPG, which requires a bit of tweaking on macOS (as opposed to Linux). It might be that your contribution extends or modifies an existing role, or perhaps it adds a whole new role (because your contribution does something new). Either way, either open an issue to discuss the contribution, or make a pull request for review!
 
+See [CONTRIBUTING](CONTRIBUTING.md) for more information.
+
 ## Rationale, Vision, Governance, and More
 
 See [the rationale document](RATIONALE.md) for more. It has all the other things.
