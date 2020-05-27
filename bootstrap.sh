@@ -212,7 +212,7 @@ setup_tmp_dir () {
     # https://unix.stackexchange.com/questions/30091/fix-or-alternative-for-mktemp-in-os-x
     # for why this is necessary.
     _status "Creating a temporary directory."
-    _status "This is small, and will disappear on reboot."
+    _status "(This is small, and will disappear on reboot.)"
     DIRNAME=laptop-$(date +%s)
     export LAPTOP_TMP_DIR
     LAPTOP_TMP_DIR=$(mktemp -d -t "$DIRNAME")
