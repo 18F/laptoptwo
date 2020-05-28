@@ -29,7 +29,7 @@ and once it appears, press `return` to launch it.
 In your Terminal window, copy and paste the command below, then press `return`.
 
 ```sh
-bash <(curl -s https://raw.githubusercontent.com/jadudm/laptoptwo/master/bootstrap.sh)
+bash <(curl -s https://raw.githubusercontent.com/18F/laptoptwo/master/bootstrap.sh)
 ```
 
 ![Animated GIF demonstrating the output of the script execution](images/script-output.gif)
