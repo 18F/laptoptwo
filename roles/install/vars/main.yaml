@@ -1,5 +1,12 @@
 ---
 
+# Taps to install
+# e.g. "brew tap <thing>"
+taps:
+  - buildpack/tap
+  - cloudfoundry/homebrew-tap
+  - homebrew/services
+
 # Applications to be installed via Homebrew
 # e.g. "brew install <thing>"
 homebrew:
@@ -9,6 +16,7 @@ homebrew:
   - github/gh/gh
   - hub
   - libgit2
+  - pack
   - pyenv
   - pyenv-virtualenv
   - pyenv-virtualenvwrapper
@@ -16,12 +24,6 @@ homebrew:
   - the_silver_searcher
   - vim
   - wget
-
-# Taps to install
-# e.g. "brew tap <thing>"
-taps:
-  - cloudfoundry/homebrew-tap
-  - homebrew/services
 
 # Casks (Mac GUI apps) to install
 # e.g. "brew cask <thing>"
